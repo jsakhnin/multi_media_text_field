@@ -8,6 +8,6 @@ public class MultiMediaTextFieldPlugin {
     registrar
             .platformViewRegistry()
             .registerViewFactory(
-                    "plugins.mindfulcode/supertextfield", new MultiMediaTextFieldFactory(registrar.messenger()));
+                    "plugins.mindfulcode/multimediatextfield", new MultiMediaTextFieldFactory(registrar.messenger()));
   }
 }

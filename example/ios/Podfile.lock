@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - multi_media_text_field (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - multi_media_text_field (from `.symlinks/plugins/multi_media_text_field/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  multi_media_text_field:
+    :path: ".symlinks/plugins/multi_media_text_field/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  multi_media_text_field: 36a4d6e0b460976b682835033cf8734b5025d9b1
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.10.0

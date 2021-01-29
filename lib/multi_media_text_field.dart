@@ -12,7 +12,6 @@ typedef void OnTextChangedCallback(String value);
 typedef void OnGifChangedCallback(String url);
 typedef void OnStickerChangedCallback(String path);
 
-
 class MultiMediaTextField extends StatefulWidget {
   final OnCreatedCallback onCreated;
   final OnTextChangedCallback onTextChanged;
@@ -43,21 +42,21 @@ class _MultiMediaTextFieldState extends State<MultiMediaTextField> {
   @override
   void initState() {
     // Add notifier for text change
-    _textNotifier =  ValueNotifier(_textValue);
+    _textNotifier = ValueNotifier(_textValue);
     _textNotifier.addListener(() {
       print("We are in listener... things have changed!");
       widget.onTextChanged(_textValue);
     });
 
     // Add notifier for image change
-    _imageNotifier =  ValueNotifier(_imageUriValue);
+    _imageNotifier = ValueNotifier(_imageUriValue);
     _imageNotifier.addListener(() {
       print("We are in listener... things have changed!");
       widget.onGifChanged(_imageUriValue);
     });
 
     // Add notifier for sticker change
-    _stickerNotifier =  ValueNotifier(_stickerPathValue);
+    _stickerNotifier = ValueNotifier(_stickerPathValue);
     _stickerNotifier.addListener(() {
       print("We are in listener... things have changed!");
       widget.onStickerChanged(_stickerPathValue);
@@ -69,14 +68,17 @@ class _MultiMediaTextFieldState extends State<MultiMediaTextField> {
   Widget build(BuildContext context) {
     if (defaultTargetPlatform == TargetPlatform.android) {
       return AndroidView(
-        viewType: 'plugins.mindfulcode/supertextfield',
+        viewType: 'plugins.mindfulcode/multimediatextfield',
         onPlatformViewCreated: _onPlatformViewCreated,
+      );
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      return UiKitView(
+        viewType: 'plugins.mindfulcode/multimediatextfield',
       );
     }
     return Text(
         '$defaultTargetPlatform is not yet supported by the text_view plugin');
   }
-
 
   void _onPlatformViewCreated(int id) {
     _controller = new MultiMediaTextController._(id);
@@ -86,7 +88,6 @@ class _MultiMediaTextFieldState extends State<MultiMediaTextField> {
     if (widget.onCreated != null) {
       widget.onCreated(_controller);
     }
-
   }
 
   // Listen to channel
@@ -109,7 +110,4 @@ class _MultiMediaTextFieldState extends State<MultiMediaTextField> {
         throw MissingPluginException('notImplemented');
     }
   }
-
 }
-
-
