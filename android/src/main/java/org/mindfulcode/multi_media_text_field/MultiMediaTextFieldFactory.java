@@ -1,6 +1,10 @@
 package org.mindfulcode.multi_media_text_field;
 
 import android.content.Context;
+import android.util.Log;
+
+import java.util.Map;
+
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
@@ -15,8 +19,10 @@ public class MultiMediaTextFieldFactory extends PlatformViewFactory {
     }
 
     @Override
-    public PlatformView create(Context context, int id, Object o) {
-        return new FlutterTextField(context, messenger, id);
+    public PlatformView create(Context context, int id, Object args) {
+        final Map<String, Object> creationParams = (Map<String, Object>) args;
+        Log.d("CREATION PARAMS: ", creationParams.toString());
+        return new FlutterTextField(context, messenger, id, creationParams);
     }
 
 }

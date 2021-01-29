@@ -26,16 +26,16 @@ class _MultiMediaTextFieldExampleState
               width: 130.0,
               height: 100.0,
               child: MultiMediaTextField(
-                onCreated: _onTextFieldCreated,
                 onTextChanged: (val) {
                   setState(() {
-                    print("TEXT CHANGED");
+                    print("TEXT CHANGED TO: " + val);
                     _myText = val;
                   });
                 },
+                autofocus: true,
                 onGifChanged: (val) {
                   setState(() {
-                    print("IMAGE CHANGED - \n" + _myImageUri);
+                    print("IMAGE CHANGED TO: " + val);
                     _myImageUri = val;
                   });
                 },
@@ -59,9 +59,5 @@ class _MultiMediaTextFieldExampleState
                 : Container(),
           ),
         ]));
-  }
-
-  void _onTextFieldCreated(MultiMediaTextController controller) {
-    controller.setText('Hello from Android!');
   }
 }

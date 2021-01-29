@@ -2,28 +2,53 @@ library multi_media_text_field;
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 part 'multi_media_text_controller.dart';
+part 'input_parameters.dart';
 
-typedef void OnCreatedCallback(MultiMediaTextController controller);
 typedef void OnTextChangedCallback(String value);
 typedef void OnGifChangedCallback(String url);
 typedef void OnStickerChangedCallback(String path);
 
 class MultiMediaTextField extends StatefulWidget {
-  final OnCreatedCallback onCreated;
+  /// Whether or not to use auto correction for input text
+  ///
+  /// Defaults to true. Cannot be null
+  final bool autocorrect;
+
+  /// List of auto fill hints
+  final List<String> autofillHints;
+
+  /// Whether this text field should focus itself if nothing else is already focused.
+  ///
+  /// If true, the keyboard will open as soon as this text field obtains focus. Otherwise, the keyboard is only shown after the user taps the text field.
+  ///
+  /// Defaults to false. Cannot be null.
+  final bool autofocus;
+
+  /// Listens to changes in input text
   final OnTextChangedCallback onTextChanged;
+
+  /// Listens to changes in gif input and returns URL
   final OnGifChangedCallback onGifChanged;
+
+  /// Listens to sticker input and returns URI (may be local)
   final OnStickerChangedCallback onStickerChanged;
+
+  /// The style used for the text being edited
+  final TextStyle style;
 
   MultiMediaTextField({
     Key key,
-    this.onCreated,
+    this.autocorrect = true,
+    this.autofillHints,
+    this.autofocus = false,
     this.onTextChanged,
     this.onGifChanged,
     this.onStickerChanged,
+    this.style = const TextStyle(),
   }) : super(key: key);
 
   @override
@@ -31,7 +56,8 @@ class MultiMediaTextField extends StatefulWidget {
 }
 
 class _MultiMediaTextFieldState extends State<MultiMediaTextField> {
-  MultiMediaTextController _controller;
+  InputParameters _inputParameters;
+  NativeTextController _controller;
   String _textValue = "";
   String _imageUriValue = "";
   String _stickerPathValue = "";
@@ -41,6 +67,8 @@ class _MultiMediaTextFieldState extends State<MultiMediaTextField> {
 
   @override
   void initState() {
+    // Initialize parameters
+    _inputParameters = InputParameters.fromWidget(widget);
     // Add notifier for text change
     _textNotifier = ValueNotifier(_textValue);
     _textNotifier.addListener(() {
@@ -70,6 +98,8 @@ class _MultiMediaTextFieldState extends State<MultiMediaTextField> {
       return AndroidView(
         viewType: 'plugins.mindfulcode/multimediatextfield',
         onPlatformViewCreated: _onPlatformViewCreated,
+        creationParams: _inputParameters.toJson(),
+        creationParamsCodec: const StandardMessageCodec(),
       );
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       return UiKitView(
@@ -81,13 +111,10 @@ class _MultiMediaTextFieldState extends State<MultiMediaTextField> {
   }
 
   void _onPlatformViewCreated(int id) {
-    _controller = new MultiMediaTextController._(id);
+    _controller = new NativeTextController._(id);
     // Start listening to changes
     print("We started listening");
     _controller._channel.setMethodCallHandler(_myListenHandler);
-    if (widget.onCreated != null) {
-      widget.onCreated(_controller);
-    }
   }
 
   // Listen to channel
