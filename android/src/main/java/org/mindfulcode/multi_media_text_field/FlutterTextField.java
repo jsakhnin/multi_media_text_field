@@ -4,7 +4,7 @@ import android.content.ClipDescription;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +18,8 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.EditText;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.view.inputmethod.EditorInfoCompat;
 import androidx.core.view.inputmethod.InputConnectionCompat;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
@@ -96,7 +98,6 @@ public class FlutterTextField implements PlatformView, MethodCallHandler {
                 methodChannel.invokeMethod("changeText", editText.getText().toString());
             }
         });
-
     }
 
     @Override
@@ -135,7 +136,14 @@ public class FlutterTextField implements PlatformView, MethodCallHandler {
         double _fontSize = (double) _creationParams.get("fontSize");
         Log.d("VIEWDEBUG", "getView: Font size : "+ _fontSize);
         editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, (float) _fontSize);
-
+        // Set cursor drawable
+        Drawable unwrappedDrawable = ContextCompat.getDrawable(_context, R.drawable.cursor);
+        Drawable wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable);
+        DrawableCompat.setTint(wrappedDrawable, Color.RED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Log.d("VIEWDEBUG", "getView: changing drawable!");
+            editText.setTextCursorDrawable(wrappedDrawable);
+        }
         return editText;
     }
 
